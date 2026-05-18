@@ -1,1 +1,12 @@
 .superpowers/
+node_modules/
+client/dist/
+server/dist/
+projects/
+!projects/.gitkeep
+.env
+.env.local
+playwright-report/
+test-results/
+coverage/
+legacy/
