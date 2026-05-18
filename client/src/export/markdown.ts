@@ -15,6 +15,7 @@ export function toMarkdown(project: Project): string {
 
   for (const sec of SECTIONS) {
     if (sec.id === 'overview') continue;
+    if (sec.id === 'logic') continue; // navigation hub, no data
     const value = project.sections[sec.id];
     if (sec.shape === 'list' && (!Array.isArray(value) || value.length === 0)) continue;
     if (sec.shape === 'object' && !value) continue;

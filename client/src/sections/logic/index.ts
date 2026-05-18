@@ -1,3 +1,3 @@
 import { registerWidget } from '@/renderer/widgets';
-import { LogicTabsWidget } from './LogicTabsWidget';
-registerWidget('logic-tabs', LogicTabsWidget);
+import { LogicOverviewWidget } from './LogicOverviewWidget';
+registerWidget('logic-overview', LogicOverviewWidget);
