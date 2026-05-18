@@ -33,7 +33,7 @@ export function SectionsNav({
     return () => window.removeEventListener('keydown', onKey);
   }, [mobile, open, onClose]);
 
-  const Item = ({ id, label, icon, refProp }: { id: string; label: string; icon: string; refProp?: React.RefObject<HTMLButtonElement> }) => {
+  const Item = ({ id, label, icon, indent, refProp }: { id: string; label: string; icon: string; indent: boolean; refProp?: React.RefObject<HTMLButtonElement> }) => {
     const active = id === current;
     const count = counts[id];
     return (
@@ -43,8 +43,9 @@ export function SectionsNav({
         onClick={() => { onSelect(id); if (mobile) onClose(); }}
         aria-current={active ? 'page' : undefined}
         style={{
-          display: 'flex', alignItems: 'center', gap: 9, padding: '8px 16px',
-          fontSize: 13, cursor: 'pointer', background: active ? C.accentDim : 'none',
+          display: 'flex', alignItems: 'center', gap: 9,
+          padding: `7px ${indent ? 16 : 16}px 7px ${indent ? 36 : 16}px`,
+          fontSize: indent ? 12 : 13, cursor: 'pointer', background: active ? C.accentDim : 'none',
           width: '100%', textAlign: 'left', border: 'none',
           borderLeft: active ? `2px solid ${C.accent}` : '2px solid transparent',
           fontWeight: active ? 600 : 400, color: active ? C.text : C.muted, fontFamily: 'inherit',
@@ -58,20 +59,30 @@ export function SectionsNav({
 
   const navBody = (
     <nav aria-label="Sections">
-      {GROUPS.map((g, gi) => (
-        <div key={g.id} style={{ marginTop: gi === 0 ? 0 : 8, paddingTop: gi === 0 ? 0 : 8, borderTop: gi === 0 ? 'none' : `1px solid ${C.border}` }}>
-          <div style={{ padding: '8px 16px 6px', fontSize: 9, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{g.label}</div>
-          {SECTIONS.filter((s) => s.group === g.id).map((s, i) => (
-            <Item key={s.id} id={s.id} label={s.title} icon={s.icon} refProp={gi === 0 && i === 0 ? firstFocusable : undefined} />
-          ))}
-        </div>
-      ))}
+      {GROUPS.map((g, gi) => {
+        const sections = SECTIONS.filter((s) => s.group === g.id);
+        const sectionIds = new Set(sections.map((s) => s.id));
+        return (
+          <div key={g.id} style={{ marginTop: gi === 0 ? 0 : 8, paddingTop: gi === 0 ? 0 : 8, borderTop: gi === 0 ? 'none' : `1px solid ${C.border}` }}>
+            <div style={{ padding: '8px 16px 6px', fontSize: 9, color: C.muted, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{g.label}</div>
+            {sections.map((s, i) => {
+              const indent = !!(s.parentId && sectionIds.has(s.parentId));
+              return (
+                <Item
+                  key={s.id} id={s.id} label={s.title} icon={s.icon} indent={indent}
+                  refProp={gi === 0 && i === 0 ? firstFocusable : undefined}
+                />
+              );
+            })}
+          </div>
+        );
+      })}
     </nav>
   );
 
   if (!mobile) {
     return (
-      <aside style={{ width: 200, flexShrink: 0, background: C.surface, borderRight: `1px solid ${C.border}`, padding: '14px 0', position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
+      <aside style={{ width: 220, flexShrink: 0, background: C.surface, borderRight: `1px solid ${C.border}`, padding: '14px 0', position: 'sticky', top: 0, height: '100vh', overflowY: 'auto' }}>
         {navBody}
       </aside>
     );
