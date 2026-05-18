@@ -10,7 +10,8 @@ export function useProjectSync(api: Api, id: string | null) {
   const [project, setProject] = useState<Project | null>(null);
   const [status, setStatus] = useState<SyncStatus>('idle');
   const [error, setError] = useState<string | null>(null);
-  const saveRef = useRef<((p: Project) => void) | null>(null);
+  const saveRef = useRef<(((p: Project) => void) & { flush: () => void }) | null>(null);
+  const retryTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const retryCount = useRef(0);
 
   useEffect(() => {
@@ -25,23 +26,37 @@ export function useProjectSync(api: Api, id: string | null) {
 
   useEffect(() => {
     if (!project) { saveRef.current = null; return; }
+    let cancelled = false;
     const fn = async (p: Project) => {
+      if (cancelled) return;
       setStatus('saving');
       await bufferPut(p.id, p);
+      if (cancelled) return;
       try {
         await api.save(p);
+        if (cancelled) return;
         await bufferClear(p.id);
         setStatus('saved');
         retryCount.current = 0;
       } catch (e: any) {
+        if (cancelled) return;
         retryCount.current += 1;
         const delay = Math.min(30_000, 1000 * Math.pow(3, retryCount.current - 1));
         setStatus('error');
         setError(e.message);
-        setTimeout(() => fn(p), delay);
+        retryTimerRef.current = setTimeout(() => {
+          retryTimerRef.current = null;
+          fn(p);
+        }, delay);
       }
     };
     saveRef.current = debounce(fn, 500);
+    return () => {
+      cancelled = true;
+      saveRef.current?.flush();
+      if (retryTimerRef.current) { clearTimeout(retryTimerRef.current); retryTimerRef.current = null; }
+      saveRef.current = null;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api, project?.id]);
 
