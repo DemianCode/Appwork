@@ -9,5 +9,13 @@ export const overview: SectionConfig = {
     { key: 'problem', label: 'Problem it solves', type: 'textarea', placeholder: 'What frustration or gap does it address?' },
     { key: 'uniqueValue', label: 'What makes it valuable / different', type: 'textarea', placeholder: 'Your selling point.' },
     { key: 'successCriteria', label: 'How will you know it worked?', type: 'textarea', placeholder: 'e.g. 70% finish the quiz; users return within 7 days.', optional: true },
+    {
+      key: 'customNotes', label: 'Custom notes', type: 'list', optional: true,
+      hint: 'Anything else worth keeping with this project — ideas, references, open thoughts, links.',
+      itemFields: [
+        { key: 'name', label: 'Title', type: 'text', placeholder: 'e.g. Inspiration, Tech notes, Open question' },
+        { key: 'content', label: 'Notes', type: 'textarea' },
+      ],
+    },
   ],
 };
