@@ -9,6 +9,7 @@ import { Sheet } from './shell/Sheet';
 import { SectionRenderer } from './renderer/SectionRenderer';
 import { createApi } from './storage/api';
 import { useProjectSync } from './storage/useProjectSync';
+import { ExportModal } from './shell/ExportModal';
 import { SECTIONS, SECTION_MAP } from './schema/sections';
 import type { ProjectSummary } from './schema/types';
 import './sections/register';
@@ -67,6 +68,7 @@ function Shell() {
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const [bootstrapped, setBootstrapped] = useState(false);
 
   const sync = useProjectSync(api, currentId);
@@ -84,6 +86,7 @@ function Shell() {
     const onKey = (e: KeyboardEvent) => {
       const meta = e.metaKey || e.ctrlKey;
       if (meta && (e.key === 'n' || e.key === 'k')) { e.preventDefault(); setSwitcherOpen(true); }
+      if (meta && e.key === 'e') { e.preventDefault(); setExportOpen(true); }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -124,7 +127,7 @@ function Shell() {
         onOpenSwitcher={() => setSwitcherOpen(true)}
         onOpenSectionsDrawer={() => setDrawerOpen(true)}
         onOpenMenu={() => setMenuOpen(true)}
-        onOpenExport={() => alert('Export coming in a later task')}
+        onOpenExport={() => setExportOpen(true)}
       />
 
       <div style={{ display: 'flex', flex: 1, flexDirection: mobile ? 'column' : 'row' }}>
@@ -156,6 +159,8 @@ function Shell() {
         onChanged={refresh}
         onDeleted={async () => { setCurrentId(null); await refresh(); }}
       />
+
+      <ExportModal open={exportOpen} onClose={() => setExportOpen(false)} project={project} />
     </div>
   );
 }
