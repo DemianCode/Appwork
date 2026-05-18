@@ -42,6 +42,8 @@ export type SectionConfig = {
   group: 'core' | 'logic' | 'context';
   icon: string;
   intro: string;
+  details?: string;
+  parentId?: string;
   shape: 'object' | 'list';
   fields: FieldConfig[];
 };
