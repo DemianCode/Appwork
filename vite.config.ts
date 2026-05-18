@@ -16,7 +16,7 @@ export default defineConfig({
     proxy: { '/api': 'http://localhost:5174' },
   },
   build: {
-    outDir: '../client/dist',
+    outDir: path.resolve(__dirname, 'client/dist'),
     emptyOutDir: true,
   },
   test: {
