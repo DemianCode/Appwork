@@ -13,7 +13,7 @@ export async function atomicWriteJson(target: string, body: unknown): Promise<vo
 
   const base = path.basename(target, '.json');
   if (existsSync(target)) {
-    const backupName = `${base}-${Date.now()}.json`;
+    const backupName = `${base}-${Date.now()}-${crypto.randomBytes(3).toString('hex')}.json`;
     copyFileSync(target, path.join(backupDir, backupName));
     rotateBackups(dir, base);
   }
