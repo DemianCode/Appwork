@@ -7,11 +7,15 @@ import { data } from './data';
 import { integrations } from './integrations';
 import { triggers } from './triggers';
 import { nonGoals } from './non-goals';
+import { brand } from './brand';
+import { constraints } from './constraints';
+import { glossary } from './glossary';
+import { openQuestions } from './open-questions';
 import type { SectionConfig } from '../types';
 
 export const SECTIONS: SectionConfig[] = [
   overview, roles, screens, flows,
   logic, data, integrations, triggers,
-  nonGoals,
+  nonGoals, brand, constraints, glossary, openQuestions,
 ];
 export const SECTION_MAP: Record<string, SectionConfig> = Object.fromEntries(SECTIONS.map((s) => [s.id, s]));
