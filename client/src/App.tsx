@@ -10,6 +10,7 @@ import { SectionRenderer } from './renderer/SectionRenderer';
 import { createApi } from './storage/api';
 import { useProjectSync } from './storage/useProjectSync';
 import { ExportModal } from './shell/ExportModal';
+import { NavigationCtx } from './shell/NavigationContext';
 import { readLegacyLocalStorage, migrateLegacy } from './storage/migrations';
 import { SECTIONS, SECTION_MAP } from './schema/sections';
 import type { ProjectSummary } from './schema/types';
@@ -125,6 +126,7 @@ function Shell() {
   }
 
   return (
+    <NavigationCtx.Provider value={{ setSection }}>
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: C.bg, color: C.text, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
       <style>{`
         textarea::placeholder, input::placeholder { color: ${dark ? '#3a3d55' : '#9ea4c0'}; }
@@ -176,6 +178,7 @@ function Shell() {
 
       <ExportModal open={exportOpen} onClose={() => setExportOpen(false)} project={project} />
     </div>
+    </NavigationCtx.Provider>
   );
 }
 
