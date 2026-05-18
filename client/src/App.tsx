@@ -10,6 +10,7 @@ import { SectionRenderer } from './renderer/SectionRenderer';
 import { createApi } from './storage/api';
 import { useProjectSync } from './storage/useProjectSync';
 import { ExportModal } from './shell/ExportModal';
+import { readLegacyLocalStorage, migrateLegacy } from './storage/migrations';
 import { SECTIONS, SECTION_MAP } from './schema/sections';
 import type { ProjectSummary } from './schema/types';
 import './sections/register';
@@ -81,6 +82,19 @@ function Shell() {
   }, []);
 
   useEffect(() => { refresh(); }, [refresh]);
+
+  const [legacyOffered, setLegacyOffered] = useState(false);
+  useEffect(() => {
+    if (legacyOffered || !bootstrapped || projects.length) return;
+    const legacy = readLegacyLocalStorage();
+    if (!legacy) return;
+    setLegacyOffered(true);
+    if (confirm("Found data from the old App Planner. Import it as a new project called 'Untitled (imported from v1)'?")) {
+      api.importProject(migrateLegacy(legacy)).then(() => { localStorage.removeItem('ap-data'); refresh(); });
+    } else {
+      localStorage.removeItem('ap-data');
+    }
+  }, [bootstrapped, projects.length, legacyOffered, refresh]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
