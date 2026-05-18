@@ -214,7 +214,7 @@ type SectionConfig = {
 - Custom widgets mounted via `registerWidget(name, Component)`; widget receives `{value, onChange, project, schema}`.
 - Counts surfaced to the shell (sidebar badges) via `sectionCounts(project) → Record<sectionId, number>`.
 - Empty-section call-to-action: "Add your first X" inline with the `+` button.
-- `ref` field renders chip autocomplete; multi when `refMulti: true`.
+- `ref` field renders chip autocomplete sourced from the target section's items (by `id`); multi when `refMulti: true`. In markdown export, ref values render as the target item's `name` (or `term` for Glossary); JSON export keeps the underlying `id` list so cross-refs survive round-tripping.
 
 ### 6.3 Custom widgets
 
@@ -249,7 +249,7 @@ Order, grouping, and field summary. Each is its own config file in `client/src/s
 ### Context
 
 9. **Non-goals** *(list)* — `name`, `whyExcluded`.
-10. **Brand** *(object)* — `toneWords` (enum-chips), `references` (textarea/URLs), `colourDirection`, `voiceNotes`.
+10. **Brand** *(object)* — `toneWords` (enum-chips: formal/playful/calm/bold/serious/warm/etc — extensible), `references` (textarea; URLs or descriptive notes), `colourDirection` (textarea), `voiceNotes` (textarea).
 11. **Constraints** *(object)* — `devices`, `offlineBehaviour`, `languages`, `accessibilityLevel`, `performance`, `dataRetention`.
 12. **Glossary** *(list)* — `term`, `definition`.
 13. **Open questions** *(list)* — `question`, `status` (select: open / answered / parked), `notes`.
@@ -345,6 +345,7 @@ Structure:
 | 409 on PUT (concurrent file change) | Modal: Reload / Overwrite / Cancel |
 | 404 on project load | Toast + redirect to project list |
 | Duplicate slug on rename | Inline field error, no submit |
+| Duplicate slug on import | Server returns 409 with suggested suffixed slug; client modal: Use suggested name / Cancel |
 | Invalid JSON on import | Modal with parser error line/column |
 | Schema-version newer than client | Read-only banner + Export-only mode |
 
@@ -382,3 +383,19 @@ None at this stage of design. The following were chosen during brainstorm and ar
 - Architecture approach = schema-driven sections (approach B)
 - Export = both formats with toggle (option 3)
 - Tier inclusion = all three (option 1)
+
+## 17. Note on implementation decomposition
+
+This spec is intentionally broad — it captures the full v2 target. The implementation plan (next step) is expected to split delivery into milestones, e.g.:
+
+1. **Scaffold + storage** — repo, server, file IO API, single-project loading using the v1 schema.
+2. **Schema-driven renderer** — config types, generic renderer, port the v1 five sections behind the new framework.
+3. **Multi-project shell** — top bar, dropdown switcher, mobile sheet, drawer, accessibility baseline.
+4. **Logic-builder integration** — port `app-logic-builder.jsx` into the Logic custom widget.
+5. **New sections (Tier 1)** — Roles, Integrations, Triggers, Non-goals.
+6. **Detail expansions (Tier 2)** — Screen states, Data fields, Flow acceptance criteria, validation notes.
+7. **Context sections (Tier 3)** — Brand, Constraints, Glossary, Open questions.
+8. **Export upgrade** — Markdown rewrite, JSON output, ZIP bundle, AI footer.
+9. **Migration + polish** — v0→v1 importer, error toasts, IndexedDB buffer, keyboard shortcuts, tests.
+
+Each milestone should be independently shippable.
