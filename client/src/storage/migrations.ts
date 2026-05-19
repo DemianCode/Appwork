@@ -38,7 +38,10 @@ export function migrateLegacy(raw: LegacyData | null | undefined, name = 'Untitl
       logicOutcomes: [],
       data: legacy.data ?? [],
       integrations: [], triggers: [], nonGoals: [],
-      brand: {}, constraints: {}, glossary: [], openQuestions: [],
+      brandTone: { words: [], customWords: [], description: '', voiceNotes: '' },
+      brandColour: { direction: '', colours: [] },
+      brandReferences: { notes: '', items: [] },
+      constraints: {}, glossary: [], openQuestions: [],
     },
   };
 }
@@ -71,5 +74,42 @@ export function migrateLogicShape(project: Project): Project {
   sections.logicConditions = old.conditions  ?? [];
   sections.logicOutcomes   = old.outcomes    ?? [];
   delete sections.logic;
+  return project;
+}
+
+type OldBrandShape = {
+  toneWords?: unknown;
+  references?: unknown;
+  colourDirection?: unknown;
+  voiceNotes?: unknown;
+};
+
+/**
+ * Maps a v2-alpha `project.sections.brand` object into three per-page slots.
+ * No-op if the project already uses the new layout.
+ */
+export function migrateBrandShape(project: Project): Project {
+  const sections = project.sections as Record<string, unknown>;
+  const old = sections.brand as OldBrandShape | undefined;
+  if (!old || typeof old !== 'object' || Array.isArray(old)) return project;
+  const hasOldKeys = !!(old.toneWords || old.references || old.colourDirection || old.voiceNotes);
+  if (!hasOldKeys) return project;
+  if (sections.brandTone || sections.brandColour || sections.brandReferences) return project;
+
+  sections.brandTone = {
+    words: Array.isArray(old.toneWords) ? (old.toneWords as string[]) : [],
+    customWords: [],
+    description: '',
+    voiceNotes: typeof old.voiceNotes === 'string' ? old.voiceNotes : '',
+  };
+  sections.brandColour = {
+    direction: typeof old.colourDirection === 'string' ? old.colourDirection : '',
+    colours: [],
+  };
+  sections.brandReferences = {
+    notes: typeof old.references === 'string' ? old.references : '',
+    items: [],
+  };
+  delete sections.brand;
   return project;
 }

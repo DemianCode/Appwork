@@ -3,7 +3,7 @@ import type { Project } from '@/schema/types';
 import { Api } from './api';
 import { debounce } from './debounce';
 import { bufferClear, bufferPut } from './buffer';
-import { migrateLogicShape } from './migrations';
+import { migrateLogicShape, migrateBrandShape } from './migrations';
 
 export type SyncStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -20,7 +20,7 @@ export function useProjectSync(api: Api, id: string | null) {
     setStatus('idle');
     let cancelled = false;
     api.get(id)
-      .then((p) => { if (!cancelled) setProject(migrateLogicShape(p)); })
+      .then((p) => { if (!cancelled) setProject(migrateBrandShape(migrateLogicShape(p))); })
       .catch((e) => { if (!cancelled) setError(e.message); });
     return () => { cancelled = true; };
   }, [api, id]);
