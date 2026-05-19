@@ -96,6 +96,7 @@ export function SectionsNav({
             onClick={opts.onToggle}
             aria-label={`Toggle ${s.title} children`}
             aria-expanded={opts.childOpen ?? false}
+            aria-controls={`nav-children-${s.id}`}
             style={{
               width: 32, border: 'none', background: 'none', cursor: 'pointer',
               color: C.muted, fontSize: 12, paddingRight: 12,
@@ -135,9 +136,19 @@ export function SectionsNav({
           }));
 
           if (hasChildren && childOpen) {
-            for (const c of sections.filter((x) => x.parentId === s.id)) {
-              rendered.push(renderItem(c, { indent: true, isParent: false }));
-            }
+            const childRows = sections
+              .filter((x) => x.parentId === s.id)
+              .map((c) => renderItem(c, { indent: true, isParent: false }));
+            rendered.push(
+              <div
+                key={`children-${s.id}`}
+                role="group"
+                id={`nav-children-${s.id}`}
+                aria-label={`${s.title} children`}
+              >
+                {childRows}
+              </div>
+            );
           }
         }
 
