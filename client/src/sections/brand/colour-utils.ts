@@ -69,7 +69,8 @@ export function parseRgb(input: string): [number, number, number] | null {
   if (!input) return null;
   const m = input.match(/^\s*(?:rgb\s*\(\s*)?(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)?\s*$/i);
   if (!m) return null;
-  const r = +m[1], g = +m[2], b = +m[3];
+  const [, m1, m2, m3] = m as RegExpMatchArray & [string, string, string, string];
+  const r = +m1, g = +m2, b = +m3;
   if ([r, g, b].some((n) => n < 0 || n > 255)) return null;
   return [r, g, b];
 }
@@ -78,7 +79,8 @@ export function parseHsl(input: string): [number, number, number] | null {
   if (!input) return null;
   const m = input.match(/^\s*(?:hsl\s*\(\s*)?(\d{1,3})\s*,\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*\)?\s*$/i);
   if (!m) return null;
-  const h = +m[1], s = +m[2], l = +m[3];
+  const [, m1, m2, m3] = m as RegExpMatchArray & [string, string, string, string];
+  const h = +m1, s = +m2, l = +m3;
   if (h < 0 || h > 360) return null;
   if (s < 0 || s > 100) return null;
   if (l < 0 || l > 100) return null;
