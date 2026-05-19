@@ -3,7 +3,7 @@
   <Name>appwork</Name>
   <Repository>ghcr.io/demiancode/appwork:main</Repository>
   <Registry>https://ghcr.io</Registry>
-  <Network>bridge</Network>
+
   <MyIP/>
   <Shell>sh</Shell>
   <Privileged>false</Privileged>
