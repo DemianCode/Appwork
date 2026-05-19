@@ -1,8 +1,8 @@
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRepo } from './projects';
-import { mountRoutes } from './routes';
+import { createRepo } from './projects.js';
+import { mountRoutes } from './routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();

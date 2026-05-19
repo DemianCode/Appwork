@@ -1,7 +1,7 @@
 import { promises as fs, existsSync, readdirSync, statSync, mkdirSync, copyFileSync, unlinkSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { atomicWriteJson } from './fs-atomic';
-import { CURRENT_SCHEMA_VERSION, Project, ProjectSummary } from './types';
+import { atomicWriteJson } from './fs-atomic.js';
+import { CURRENT_SCHEMA_VERSION, Project, ProjectSummary } from './types.js';
 
 export type ProjectsRepo = {
   list: () => Promise<ProjectSummary[]>;
