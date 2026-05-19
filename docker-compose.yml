@@ -1,0 +1,18 @@
+services:
+  appwork:
+    image: ghcr.io/demiancode/appwork:main
+    container_name: appwork
+    restart: unless-stopped
+    ports:
+      - "${APPWORK_PORT:-4173}:4173"
+    volumes:
+      - appwork-projects:/data/projects
+    environment:
+      - NODE_ENV=production
+      - APPWORK_HOST=0.0.0.0
+      - APPWORK_PORT=4173
+      - APPWORK_PROJECTS_DIR=/data/projects
+
+volumes:
+  appwork-projects:
+    driver: local

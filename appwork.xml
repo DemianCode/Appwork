@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>appwork</Name>
+  <Repository>ghcr.io/demiancode/appwork:main</Repository>
+  <Registry>https://ghcr.io</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support/>
+  <Project/>
+  <Overview>Appwork — visual brand and UI spec editor. Build, manage, and export design specs with a React/Express stack.</Overview>
+  <Category>Tools:</Category>
+  <WebUI>http://[IP]:[PORT:4173]/</WebUI>
+  <TemplateURL/>
+  <Icon>https://raw.githubusercontent.com/DemianCode/appwork/main/client/src/assets/logo.svg</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Web UI Port" Target="4173" Default="4173" Mode="tcp" Description="Port for the Appwork web interface." Type="Port" Display="always" Required="true" Mask="false">4173</Config>
+  <Config Name="Projects Directory" Target="/data/projects" Default="/mnt/user/appdata/appwork/projects" Mode="rw" Description="Directory where Appwork stores project JSON files." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/appwork/projects</Config>
+  <Config Name="Host Bind" Target="APPWORK_HOST" Default="0.0.0.0" Description="Interface the server binds to. Keep 0.0.0.0 for Unraid." Type="Variable" Display="advanced" Required="false" Mask="false">0.0.0.0</Config>
+  <Config Name="Port (env)" Target="APPWORK_PORT" Default="4173" Description="Must match the port mapping above." Type="Variable" Display="advanced" Required="false" Mask="false">4173</Config>
+  <Config Name="Projects Dir (env)" Target="APPWORK_PROJECTS_DIR" Default="/data/projects" Description="Internal container path. Must match the path mapping above." Type="Variable" Display="advanced" Required="false" Mask="false">/data/projects</Config>
+</Container>
